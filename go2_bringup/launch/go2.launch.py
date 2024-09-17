@@ -36,6 +36,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
@@ -73,6 +74,20 @@ def generate_launch_description():
             'launch/'), 'go2_driver.launch.py'])
     )
 
+    camera_cmd = Node(
+        package='gscam',
+        executable='gscam_node',
+        name='gscam_driver',
+        namespace='gscam',
+        output='screen',
+        parameters=[{
+            'camera_name': 'udp_camera',
+            'gscam_config': 'udpsrc address=230.1.1.1 port=1720 multicast-iface=eth0 ! application/x-rtp, media=video, encoding-name=H264 ! rtph264depay ! h264parse ! avdec_h264 ! videoconvert ! video/x-raw,width=1280,height=720',
+            'frame_id': 'camera_frame',
+            'sync_sink': True
+        }]
+    )
+
     lidar_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
             get_package_share_directory('hesai_ros_driver'),
@@ -102,6 +117,7 @@ def generate_launch_description():
     ld.add_action(lidar_cmd)
     ld.add_action(realsense_cmd)
     ld.add_action(driver_cmd)
+    ld.add_action(camera_cmd)
     ld.add_action(rviz_cmd)
 
     return ld

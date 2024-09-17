@@ -107,6 +107,11 @@ ros:
 sudo apt install ros-humble-realsense2-camera
 ```
 
+### Front camera support
+
+    sudo apt-get install gstreamer1.0-tools libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-good1.0-dev
+
+
 ## Usage
 ### Bringup the robot
 Either from your computer, or from inside the robot, execute the following:
